@@ -1,9 +1,14 @@
+import { MessageActionRow, MessageButton } from "discord.js";
 import { Command, CommandHandler } from "../command-register";
 import { cancelReply } from "../util/cancelReply";
 
 const handler: CommandHandler = async (interaction) => {
-    interaction.isCommand() && cancelReply(interaction);
-    interaction.channel?.send('Ping! :ping_pong:').then((m) => m.react(':white_check_mark:'));
+    if (!interaction.isCommand()) return;
+    cancelReply(interaction);
+
+    interaction.channel?.send({
+        'content': 'Ping! :ping_pong:',
+    }).then((m) => m.react('✅'));
 }
 
 export default {
