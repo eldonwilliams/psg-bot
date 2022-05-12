@@ -1,7 +1,7 @@
 import { config, } from 'dotenv';
 config();
 
-import { Client, Intents } from 'discord.js';
+import { Client, Intents, MessageEmbed } from 'discord.js';
 import { collectCommands, CommandHandler, registerCommands } from './command-register';
 
 const client = new Client({
@@ -31,8 +31,14 @@ client.on('interactionCreate', async interaction => {
     (
         nameTable[interaction.commandName] ??
         (() => {
+            let embed = new MessageEmbed()
+                .setTitle('Error!')
+                .setColor('RED')
+                .setDescription("That command wasn't found internally, but it was registered with Discord. Something weird is going on. Contact Eldon if this persists!");
+
             interaction.reply({
-                "content": "That command wasn't found internally, but it was registered with Discord. Something weird is going on. Contact Eldon if this persists!",
+                "embeds": [embed],
+                "ephemeral": true,
             });
         })
     )(interaction, client);
