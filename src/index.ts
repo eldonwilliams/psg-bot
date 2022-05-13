@@ -12,15 +12,18 @@ const client = new Client({
 
 const nameTable: { [command: string]: CommandHandler,} = {};
 
+export function LoadSlashCommands() {
+    registerCommands(process.env.CLIENT_ID ?? "", process.env.GUILD_ID ?? "");
+    collectCommands().forEach((command) => nameTable[command.information.name ?? "NAME REQ"] = command.handler);
+}
+
 client.on('ready', (loadedClient) => {
     loadedClient.user.setActivity({
         'name': process.env.ACTIVITY_NAME ?? "Configuration Didn't Say :(",
         'type': "PLAYING",
     });
 
-    registerCommands(process.env.CLIENT_ID ?? "", process.env.GUILD_ID ?? "");
-
-    collectCommands().forEach((command) => nameTable[command.information.name ?? "NAME REQ"] = command.handler);
+    LoadSlashCommands();
 
     console.log(`The bot is up as ${loadedClient.user.tag}`);
 });
