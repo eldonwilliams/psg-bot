@@ -3,7 +3,6 @@ config();
 
 import { ApplicationCommandOptionType } from "discord-api-types/v9";
 import { Command, CommandHandler } from "../command-register";
-import { LoadSlashCommands } from "..";
 import { LoadSlashCommands } from "../bot";
 import { MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
 import { cancelReply } from "../util/cancelReply";
