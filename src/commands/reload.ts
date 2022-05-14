@@ -4,6 +4,7 @@ config();
 import { ApplicationCommandOptionType } from "discord-api-types/v9";
 import { Command, CommandHandler } from "../command-register";
 import { LoadSlashCommands } from "..";
+import { LoadSlashCommands } from "../bot";
 import { MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
 import { cancelReply } from "../util/cancelReply";
 
@@ -95,7 +96,7 @@ const handler: CommandHandler = async (interaction) => {
                             .setDescription("The command to restart that system has been sent! Thank you. :)")
                     ],
                     'components': [],
-                }).then(() => setTimeout(interaction.deleteReply, 1000));
+                }).then(() => setTimeout(() => interaction.deleteReply(), 1000));
 
 
             });
