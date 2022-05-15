@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType } from "discord-api-types/v9";
 import { Command, CommandHandler } from "../command-register";
 import { LoadSlashCommands } from "../bot";
 import { MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
-import { cancelReply } from "../util/cancelReply";
+import fetch from 'axios';
 
 const handler: CommandHandler = async (interaction) => {
     if (!interaction.isCommand()) return;
@@ -15,7 +15,12 @@ const handler: CommandHandler = async (interaction) => {
     let section: number = interaction.options.getInteger('section', false) ?? 2;
 
     const slashCommands = () => LoadSlashCommands();
-    const bot = () => {};
+    const bot = () => {
+        fetch({
+            'method': 'POST',
+            'url': `${process.env.RUNNER_API === "0" ? `http://localhost:${process.env.RUNNER_PORT}` : process.env.RUNNER_API}/restart`
+        });
+    };
     const all = () => { slashCommands(); }
 
     const picker = () => {
@@ -97,7 +102,19 @@ const handler: CommandHandler = async (interaction) => {
                     'components': [],
                 }).then(() => setTimeout(() => interaction.deleteReply(), 1000));
 
-
+                switch (selectInteraction.values[0]) {
+                    case 'all':
+                        all();
+                        break;
+                    case 'slash':
+                        slashCommands();
+                        break;
+                    case 'bot':
+                        bot();
+                        break;
+                    default:
+                        break;
+                }
             });
         });
     };
@@ -115,8 +132,20 @@ const handler: CommandHandler = async (interaction) => {
         case 3:
             bot();
             break;
+        default:
+            picker();
+            break;
     }
 
+    interaction.editReply({ 
+        'embeds': [
+            new MessageEmbed()
+                .setColor('GREEN')
+                .setTitle('Success!')
+                .setDescription("The command to restart that system has been sent! Thank you. :)")
+        ],
+        'components': [],
+    }).then(() => setTimeout(() => interaction.deleteReply(), 1000));
 }
 
 export default {
