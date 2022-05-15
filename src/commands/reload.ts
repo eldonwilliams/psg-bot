@@ -92,7 +92,7 @@ const handler: CommandHandler = async (interaction) => {
                 if (!selectInteraction.isSelectMenu()) return; // TS Reasons
                 cancelCollector.stop();
                 selectInteraction.deferUpdate();
-                interaction.editReply({ 
+                if (selectInteraction.values[0] !== 'bot') interaction.editReply({ 
                     'embeds': [
                         new MessageEmbed()
                             .setColor('GREEN')
@@ -110,6 +110,7 @@ const handler: CommandHandler = async (interaction) => {
                         slashCommands();
                         break;
                     case 'bot':
+                        await interaction.deleteReply();
                         bot();
                         break;
                     default:
