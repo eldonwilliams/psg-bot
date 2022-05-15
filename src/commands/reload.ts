@@ -1,11 +1,11 @@
+import fetch from 'axios';
+import { ApplicationCommandOptionType } from "discord-api-types/v9";
+import { MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
 import { config } from "dotenv";
+import { LoadSlashCommands } from "../bot";
+import { CommandHandler, CommandModule } from "../command-register";
 config();
 
-import { ApplicationCommandOptionType } from "discord-api-types/v9";
-import { Command, CommandHandler } from "../command-register";
-import { LoadSlashCommands } from "../bot";
-import { MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
-import fetch from 'axios';
 
 const handler: CommandHandler = async (interaction) => {
     if (!interaction.isCommand()) return;
@@ -180,4 +180,4 @@ export default {
             },
         ],
     },
-} as Command;
+} as CommandModule;

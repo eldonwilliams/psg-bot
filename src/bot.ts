@@ -1,8 +1,8 @@
-import { config, } from 'dotenv';
+import { Client, ColorResolvable, EmbedFieldData, Intents, MessageEmbed } from 'discord.js';
+import { config } from 'dotenv';
+import { collectCommands, CommandHandler, registerCommands } from './command-register';
 config();
 
-import { Client, ColorResolvable, EmbedFieldData, Intents, MessageEmbed } from 'discord.js';
-import { collectCommands, CommandHandler, registerCommands } from './command-register';
 
 const client = new Client({
     intents: [
