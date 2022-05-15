@@ -1,9 +1,9 @@
+import { ChildProcess, spawn } from 'child_process';
 import { config } from 'dotenv';
+import express from 'express';
+import path from 'path';
 config();
 
-import express from 'express';
-import { spawn, ChildProcess } from 'child_process';
-import path from 'path';
 
 const app = express();
 
