@@ -1,6 +1,6 @@
 import { REST } from "@discordjs/rest";
 import { APIApplicationCommand, Routes } from "discord-api-types/v9";
-import { Client, Interaction } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
 import { config } from "dotenv";
 import { readdirSync } from "fs";
 import path from "path";
@@ -8,7 +8,7 @@ config();
 
 
 /** A function that handles a chat command */
-export type CommandHandler = (interaction: Interaction, client: Client) => void;
+export type CommandHandler = (interaction: CommandInteraction, client: Client<true>) => void;
 /** A extended version of the APIApplicationCommand that has some values set to optional as they are not required */
 export type PSGApplicationCommand = Partial<APIApplicationCommand>;
 /** A container for a handler of a command and information about it */
