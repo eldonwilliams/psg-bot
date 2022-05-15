@@ -1,7 +1,7 @@
 import { config, } from 'dotenv';
 config();
 
-import { Client, Intents, MessageEmbed } from 'discord.js';
+import { Client, ColorResolvable, EmbedFieldData, Intents, MessageEmbed } from 'discord.js';
 import { collectCommands, CommandHandler, registerCommands } from './command-register';
 
 const client = new Client({
@@ -26,6 +26,30 @@ client.on('ready', (loadedClient) => {
     LoadSlashCommands();
 
     console.log(`The bot is up as ${loadedClient.user.tag}`);
+});
+
+const sendUpdateToOwner = (title: string, color: ColorResolvable, description: string, ...fields: EmbedFieldData[]) =>
+    client.users.fetch(process.env.OWNER_ID ?? "").then((user) => user.send({
+        'embeds': [
+            new MessageEmbed()
+                .setFields(...fields)
+                .setTimestamp()
+                .setTitle(title)
+                .setColor(color)
+                .setDescription(description),
+        ],
+}));
+
+client.on('error', (error) => {
+    sendUpdateToOwner('ERROR', 'RED', error.message, { 'name': 'Name', 'value': error.name, }, { 'name': 'Stack', 'value': error.stack ?? 'NO STACK', });
+});
+
+client.on('warn', (message) => {
+    sendUpdateToOwner('WARN', 'ORANGE', message);
+});
+
+client.on('rateLimit', (rld) => {
+    sendUpdateToOwner('RATE LIMIT', 'BLURPLE', `\`\`\`${JSON.stringify(rld, null, 4)}\`\`\``)
 });
 
 client.on('interactionCreate', async interaction => {
