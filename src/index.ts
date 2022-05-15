@@ -1,50 +1,56 @@
-import { config, } from 'dotenv';
+import { config } from 'dotenv';
 config();
 
-import { Client, Intents, MessageEmbed } from 'discord.js';
-import { collectCommands, CommandHandler, registerCommands } from './command-register';
+import express from 'express';
+import { spawn, ChildProcess } from 'child_process';
+import path from 'path';
 
-const client = new Client({
-    intents: [
-        Intents.FLAGS.GUILDS,
-    ]
-});
+const app = express();
 
-const nameTable: { [command: string]: CommandHandler,} = {};
+let botProcess: ChildProcess;
 
-export function LoadSlashCommands() {
-    registerCommands(process.env.CLIENT_ID ?? "", process.env.GUILD_ID ?? "");
-    collectCommands().forEach((command) => nameTable[command.information.name ?? "NAME REQ"] = command.handler);
+// This script was helped in large part by these posts
+// https://stackoverflow.com/questions/49837938/execute-script-from-node-in-a-separate-process
+// https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+
+const start = () => {
+    if (typeof botProcess !== "undefined" && !botProcess.killed) return;
+    botProcess = spawn(process.argv[0], [path.join(__dirname, './bot')], {
+        'detached': true,
+        'stdio': [ 'ignore', process.stdout, process.stdin, ],
+    });
 }
 
-client.on('ready', (loadedClient) => {
-    loadedClient.user.setActivity({
-        'name': process.env.ACTIVITY_NAME ?? "Configuration Didn't Say :(",
-        'type': "PLAYING",
-    });
+const stop = () => {
+    if (typeof botProcess === "undefined") return;
+    if (botProcess.killed) return;
+    botProcess.kill();
+}
 
-    LoadSlashCommands();
+const restart = () => {
+    if (typeof botProcess === "undefined") start();
+    stop();
+    start();
+}
 
-    console.log(`The bot is up as ${loadedClient.user.tag}`);
+const exitHandler = () => {
+    stop();
+    process.exit();
+}
+
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('SIGUSR1', exitHandler);
+process.on('SIGUSR2', exitHandler);
+process.on('uncaughtException', exitHandler);
+
+app.post('/restart', (req, res) => {
+    console.log('RUNNER: RESTART');
+    restart();
+    res.status(200).send();
 });
 
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
-
-    (
-        nameTable[interaction.commandName] ??
-        (() => {
-            let embed = new MessageEmbed()
-                .setTitle('Error!')
-                .setColor('RED')
-                .setDescription("That command wasn't found internally, but it was registered with Discord. Something weird is going on. Contact Eldon if this persists!");
-
-            interaction.reply({
-                "embeds": [embed],
-                "ephemeral": true,
-            });
-        })
-    )(interaction, client);
+app.listen(process.env.RUNNER_PORT, () => {
+    console.log('RUNNER: START');
+    start();
 });
-
-client.login(process.env.TOKEN);
