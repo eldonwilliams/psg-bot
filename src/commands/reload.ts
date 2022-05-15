@@ -128,7 +128,7 @@ const handler: CommandHandler = async (interaction) => {
             break;
         case 2:
             picker();
-            break;
+            return;
         case 3:
             bot();
             break;
