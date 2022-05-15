@@ -1,5 +1,4 @@
-import { MessageActionRow, MessageButton } from "discord.js";
-import { Command, CommandHandler } from "../command-register";
+import { CommandHandler, CommandModule } from "../command-register";
 import { cancelReply } from "../util/cancelReply";
 
 const handler: CommandHandler = async (interaction) => {
@@ -17,4 +16,4 @@ export default {
         'name': 'ping',
         'description': 'Replies with Pong!'
     },
-} as Command;
+} as CommandModule;
