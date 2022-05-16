@@ -2,6 +2,7 @@ import { MessageEmbed } from "discord.js";
 import { CommandModule } from "../command-register";
 import { hashElement } from "folder-hash";
 import { join } from "path";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 let checksum = "LOADING?";
 hashElement('.', { 'files': { 'include': ['*.js', '*.json', ], }, }).then((hash) => {
@@ -42,10 +43,10 @@ export default [
                 ],
             })
         },
-        'information': {
-            'name': 'info',
-            'description': 'Information about the bot.'
-        },
+        'information': new SlashCommandBuilder()
+            .setName("info")
+            .setDescription("General information about the bot!")
+            .toJSON(),
     },
     {
         'handler': (interaction, client) => {
@@ -73,9 +74,9 @@ export default [
                 'files': [ join(__dirname, '../../static/images/psg-long.png'), ],
             })
         },
-        'information': {
-            'name': 'links',
-            'description': 'Links that relate to the bot.'
-        },
+        'information': new SlashCommandBuilder()
+            .setName('links')
+            .setDescription('A collection of links that you may want')
+            .toJSON(),
     }
 ] as CommandModule;

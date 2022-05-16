@@ -1,3 +1,4 @@
+import { SlashCommandBuilder } from '@discordjs/builders';
 import fetch from 'axios';
 import { ApplicationCommandOptionType } from "discord-api-types/v9";
 import { MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
@@ -151,33 +152,30 @@ const handler: CommandHandler = async (interaction) => {
 
 export default {
     'handler': handler,
-    'information': {
-        'name': 'reload',
-        'description': 'Developer Only! Reloads a part of the bot (or all)',
-        'options': [
-            {
-                'name': 'section',
-                'description': 'The part of the bot you wish to reload',
-                'type': ApplicationCommandOptionType.Integer,
-                'choices': [
-                    {
-                        'name': 'All',
-                        'value': 0,
-                    },
-                    {
-                        'name': 'Slash Commands',
-                        'value': 1,
-                    },
-                    {
-                        'name': 'Bot',
-                        'value': 3,
-                    },
-                    {
-                        'name': 'Picker (Default)',
-                        'value': 2,
-                    }
-                ],
-            },
-        ],
-    },
+    'information': new SlashCommandBuilder()
+        .setName('reload')
+        .setDescription('Developer Only! Reloads a part of the bot (or all)')
+        .addIntegerOption((optionbuilder) => optionbuilder
+            .setName('section')
+            .setDescription('The part of the bot you wish to reload')
+            .addChoices(
+                {
+                    'name': 'All',
+                    'value': 0,
+                },
+                {
+                    'name': 'Slash Commands',
+                    'value': 1,
+                },
+                {
+                    'name': 'Bot',
+                    'value': 3,
+                },
+                {
+                    'name': 'Picker (Default)',
+                    'value': 2,
+                }
+            )
+        )
+        .toJSON()
 } as CommandModule;
