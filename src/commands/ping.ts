@@ -1,3 +1,4 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandHandler, CommandModule } from "../command-register";
 import { cancelReply } from "../util/cancelReply";
 
@@ -12,8 +13,8 @@ const handler: CommandHandler = async (interaction) => {
 
 export default {
     'handler': handler,
-    'information': {
-        'name': 'ping',
-        'description': 'Replies with Pong!'
-    },
+    'information': new SlashCommandBuilder()
+        .setName("ping")
+        .setDescription("Tests that the bot is in working order!")
+        .toJSON(),
 } as CommandModule;
